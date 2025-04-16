@@ -1,0 +1,4 @@
+bài toán tìm số đường thẳng chứa nhiều con kiến nhất
+cho các điểm trên hệ toạ độ x ,y. tìm đường thẳng đi qua nhiều điểm nhất,
+ và đường thẳng đó sẽ chứa nhiều nhất là bao nhiêu điểm
+giải:

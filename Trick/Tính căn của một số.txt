@@ -1,0 +1,9 @@
+muốn tính căn bậc n của một số x nào đó
+ta dùng phương pháp newton để tính gần đúng với độ phức tạp là o(logn)
+
+double a=x/2;
+while(a*a>0.5)
+{
+a=(a+x/a)/n
+}
+return int(a);
