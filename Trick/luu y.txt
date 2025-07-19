@@ -1,1 +1,0 @@
-DAG là đồ thị có hướng không có chu trình .

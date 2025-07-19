@@ -1,1 +1,0 @@
-a^-1 % m = a^(m-2) % m ( khi m là số nto)
