@@ -1,0 +1,112 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+bool check(ll t, vector<ll> &g, vector<ll> &B, vector<ll> &pb, ll m)
+{
+    ll total = 0;
+    for (ll i = 0; i < t; ++i) total += g[i];
+    if (total == 0) return true;
+    if (t > m) return false;
+
+    ll all = 0;
+    ll block = 0;
+    ll c = g[0];
+    ll val = t;
+    ll posB = 0;
+
+    for (ll r = 1; r <= total; ++r)
+    {
+        all += val;
+        c--;
+
+        if (c == 0)
+        {
+            block++;
+            if (block < t)
+            {
+                c = g[block];
+                val = t - block;
+            }
+            else
+            {
+                c = 0;
+                val = 0;
+            }
+        }
+
+        while (posB < m && B[posB] <= r) posB++;
+
+        ll sumMin = pb[posB] + (m - posB) * r;
+
+        if (all > sumMin) return false;
+    }
+    return true;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    freopen("defining_prizes_input.txt","r",stdin);
+    freopen("output.txt","w",stdout);
+
+    ll t;
+    cin >> t;
+    for (ll k = 1; k <= t; ++k)
+    {
+        ll n, m;
+        cin >> n >> m;
+
+        vector<ll> A(n);
+        for (ll i = 0; i < n; ++i) cin >> A[i];
+
+        vector<ll> B(m);
+        ll all = 0;
+        for (ll j = 0; j < m; ++j)
+        {
+            cin >> B[j];
+            all += B[j];
+        }
+
+        if (m == 0 || all == 0) {
+            cout << "Case #" << k << ": 0\n";
+            continue;
+        }
+
+        sort(A.begin(), A.end(), greater<ll>());
+        sort(B.begin(), B.end());
+
+        vector<ll> g;
+        for (ll i = 0; i < n; ) {
+            ll j = i;
+            while (j < n && A[j] == A[i]) ++j;
+            g.push_back(j - i);
+            i = j;
+        }
+
+        vector<ll> pb(m + 1, 0);
+        for (ll i = 0; i < m; ++i) pb[i + 1] = pb[i] + B[i];
+
+        ll maxLevels = min((ll)g.size(), m);
+        if (maxLevels == 0) {
+            cout << "Case #" << k << ": 0\n";
+            continue;
+        }
+
+        ll L = 0, R = maxLevels;
+        while (L < R)
+        {
+            ll mid = (L + R + 1) / 2;
+            if (check(mid, g, B, pb, m)) L = mid;
+            else R = mid - 1;
+        }
+
+        ll ans = 0;
+        for (ll i = 0; i < L; ++i) ans += g[i];
+
+        cout << "Case #" << k << ": " << ans << "\n";
+    }
+
+    return 0;
+}

@@ -1,0 +1,6 @@
+multi_set xóa interator trong O(1) xóa val trong O(logn)
+khi gọi ms.erase(val) thì ms sẽ xóa tất cả các val có trong ms,
+ngược lại khi xóa theo it thì chỉ xóa đúng vị trí đó.
+không thể xóa reverse interator, 
+low.erase(low.rbegin()) // sai
+low.erase(prev(low.end())) //đúng

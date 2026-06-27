@@ -1,0 +1,13 @@
+đề bài: bài toán cho n con bò (n<20)
+
+đặt số con bò bất kì sao cho 
+1. tổng chiều cao của tất cả các con bò >=h
+2. sk[i] >= prefix cân nặng [i-1]
+
+lời giải:
+
+thay vì ta cố gắng đặt từ con to xuống con thấp, ta nên đặt từ thấp xuống to để thuận tiện cho việc nếu sum của k con đầu >= sk của con hiện tại thì sẽ return luôn.
+
+asaaabbrcaacw
+1
+3 2 3 4

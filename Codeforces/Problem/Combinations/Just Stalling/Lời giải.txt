@@ -1,0 +1,31 @@
+bài toán cho 
+một mảng gồm chiều cao các con bò
+một mảng gồm chiều cao của các chuồng bò
+đề hỏi có bao nhiêu cách nhét hết tất cả các con bò vào chuồng mà thỏa mãn: chiều cao con bò <= chiều cao của chuồng
+
+Giải:
+hãy tư duy bài toán là: đây không bảo là con bò, mà là bài toán ghép cặp tham lam trên dữ liệu đã sắp xếp, đếm số trường hợp ghép thỏa mãn
+
+triết lý: thằng nào khó chiều nhất thì phục vụ trước, như trong cuộc sống vậy
+
+ví dụ 
+chuồng [2,3,4,4]
+bò     [1,2,3,4]
+
+khi xét các con bò ta thấy còn bò nhỏ nhất luôn có lựa chọn thoải mãn hơn những con bò cao, nên ta sẽ ưu tiên các con bò cao trước bằng việc sắp xếp lại dãy các con bò
+
+bò [4,3,2,1]
+
+tiếp theo, số chuồng thỏa mãn của bò nhỏ luôn lớn hơn bò lớn, nên khi bò lớn lấy đi một chuồng, thì sự lựa chọn của bò nhỏ sẽ giảm đi 1.
+nên ta cần tính số lựa chọn tối đa của từng con bò trước 
+ bò 		  [4,3,2,1]
+số lựa chọn vừa ý [1,3,4,4]
+
+rồi phục vụ từ khó tính đến dễ tính
+ lựa chọn của bò 4 có 1 nên ta có một trường hợp
+ lựa chọn của bò 3 có 3 nhưng do bò 4 đã chiếm mất 1 nên chỉ còn 2 trường hợp
+ lựa chọn của bò 2 có 4 nhưng do bò 3 và 4 đã chiếm 2 chuồng mà bò 2 cũng thỏa mãn nên bò 2 chỉ còn 2 lựa chọn
+ lựa chọn của bò 1 có 4 nhưng do 3 chuồng thỏa mãn của bò 1 đã bị chiếm nên bò một chỉ còn một lựa chọn duy nhất.
+=> tổng số cách xếp là 2*2*2=8.
+
+

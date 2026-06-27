@@ -1,69 +1,112 @@
 #include<bits/stdc++.h>
 using namespace std;
-
 typedef long long ll;
-const ll N=5e5+1;
-ll lazy[4*N];
-ll money[N];
-ll stock[N];
+const ll mod=1e9+7;
+const ll N=1e5+1;
 
-const int mod=1e9+7;
-void lai(ll money)
+class Seg
 {
-    lazy[1]=(lazy[1]+money)%mod;
-}
-void progress(ll curr)
-{
-    lazy[curr*2]+=lazy[curr];
-    lazy[curr*2]%=mod;
-    lazy[curr*2+1]+=lazy[curr];
-    lazy[curr*2+1]%=mod;
-    lazy[curr]=0;
-}
-void updatelazy(ll curr,ll l,ll r,ll p)
-{
-    if(l==r)
+public:
+    vector<ll> tree;
+    vector<ll> lazy;
+    vector<ll> lai;
+    Seg(ll n)
     {
-        money[p] = (money[p] + (lazy[curr] % mod) * (stock[p] % mod) % mod) % mod;
+        tree.resize(n*4);
+        lazy.resize(n*4);
+        lai.resize(n*4);
+    }
+    void pop(ll curr,ll l, ll r)
+    {
+        if(l==r)
+        {
 
-        money[p]%=mod;
+            lai[curr]= (lai[curr] + tree[curr]*lazy[curr]%mod)%mod;
+            lazy[curr]=0;
+            return;
+        }
+        lazy[curr*2+1]=(lazy[curr*2+1]+lazy[curr])%mod;
+        lazy[curr*2+2]=(lazy[curr*2+2]+lazy[curr])%mod;
         lazy[curr]=0;
-        return;
     }
-    progress(curr);
-    ll m=l+(r-l)/2;
-    if(p<=m)
+    void add(ll curr,ll l,ll r,ll p,ll x)
     {
-        updatelazy(curr*2,l,m,p);
+        pop(curr,l,r);
+        if(l==r)
+        {
+            tree[curr]=((tree[curr]+x)%mod+mod)%mod;
+            return;
+        }
+        ll m=l+(r-l)/2;
+        if(p<=m)
+        {
+            add(curr*2+1,l,m,p,x);
+        }
+        else{
+            add(curr*2+2,m+1,r,p,x);
+        }
     }
-    else{
-        updatelazy(curr*2+1,m+1,r,p);
+    void loi(ll x)
+    {
+        lazy[0]=(lazy[0]+x)%mod;
     }
-}
-int main()
+    ll rut(ll curr,ll l,ll r,ll p)
+    {
+        pop(curr,l,r);
+        if(l==r)
+        {
+            ll ans = lai[curr];
+            lai[curr]=0;
+            //DB();
+            return ans;
+        }
+        ll m=l+(r-l)/2;
+        if(p<=m)
+        {
+            return rut(curr*2+1,l,m,p);
+        }
+        else{
+            return rut(curr*2+2,m+1,r,p);
+        }
+    }
+    void DB()
+    {
+        for(ll i=0; i< tree.size() ;i++)
+        {
+            cout<<tree[i]<<' ';
+        }
+        cout<<'\n';
+    }
+
+
+};
+int main(void)
 {
     ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
+    cin.tie(nullptr);
+
     ll n,q;cin>>n>>q;
+    Seg seg(n);
     while(q--)
     {
-        ll k;cin>>k;
+        ll k; cin>>k;
         if(k==1)
         {
-          ll p,x;cin>>p>>x;
-          updatelazy(1,1,n,p);
-          stock[p]=((stock[p]+x)%mod+mod)%mod;
+            ll p,x; cin>>p>>x;
+            p--;
+            seg.add(0,0,n-1,p,x);
         }
         else if(k==2)
         {
-            ll v;cin>>v;
-            lai(v);
+            ll v; cin>>v;
+            seg.loi(v);
         }
         else{
-            ll p;cin>>p;
-            updatelazy(1,1,n,p);
-            cout<<money[p]<<'\n';
-            money[p]=0;
+            ll p; cin>>p;
+            p--;
+            cout<<seg.rut(0,0,n-1,p)<<'\n';
         }
     }
 }
+
+

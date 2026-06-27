@@ -1,0 +1,75 @@
+Đề bài: cho một mảng gồm n phần tử yêu cầu chia mảng ra thành k mảng, sao cho tổng các phần tử
+đầu tiên của mảng con đó là nhỏ nhất và 
+index[phần tử đầu của mảng thứ k] - index[phần tử đầu của mảng 1] <= dist.
+
+lời giải: ta có thể chuyển bài toán thành tim k-1 vị trí trong mảng thuộc khoảng [1,n) sao cho
+tổng tổng giá trị tại k-1 vị trí này là nhỏ nhất, và index[k]-index[1]<=dist.
+
+Nhận xét: vì index[k]-index[1]<=dist, cho nên đối với mỗi vùng chứa dist+1 phần tử ta sẽ lấy ra k-1 
+phần tử nhỏ nhất ở trong đó
+
+giải thuật: ta sử dụng một cửa sổ trượt để giới hạn khoảng phần từ đúng = dist + 1
+ta sử dụng 2 multiset low, high, và một biến sum.
+
+1. Thêm phần tử
+khi thêm phần tử ta sẽ thêm và low, sum+=nums[i];
+kiểm tra low.size> k-1, khi này mảng low có số phần tử >k-1 
+ta sẽ lấy phần tử to nhất low.rbegin() chuyển nó sang high. sum-=*low.rbegin();
+
+2. Xóa phần tử
+khi i-dist-1>0, khi này cửa sổ đã dịch sang một bước cần xóa phần tử ở đầu.
+ta sẽ thử xóa trong high trước.
+nếu high không có thì xóa trong low, sum-=nums[i-dist-1].
+, và đẩy phần tử nhỏ nhất trong high là high.begin() qua low, sum+=*high.begin().
+
+3. kiểm tra thỏa mãn
+khi low.size()==k-1 -> ans=min(ans,sum);
+
+kết quả sẽ là ans+nums[0].
+
+Code: 
+
+class Solution {
+public:
+    typedef long long ll;
+    long long minimumCost(vector<int>& nums, int k, int dist) {
+        multiset<ll> low,high;
+        ll sum=0,ans=LLONG_MAX/4;
+
+        for(int i=1; i< nums.size(); i++)
+        {
+            low.insert(nums[i]);
+            sum+=nums[i];
+            if(low.size()>k-1)
+            {
+                int move_val=*low.rbegin();
+                high.insert(move_val);
+                low.erase(prev(low.end()));
+                sum-=move_val;
+            }
+            if(i-dist-1>0)
+            {
+                ll out_val=nums[i-dist-1];
+                auto it2=high.find(out_val);
+                if(it2!=high.end())
+                {
+                    high.erase(it2);
+                }
+                else
+                {
+                    auto it1=low.find(out_val);
+                    low.erase(it1);
+                    low.insert(*high.begin());
+                    sum-=out_val;
+                    sum+=*high.begin();
+                    high.erase(high.begin());
+                }
+            }
+            if(low.size()==k-1)
+            {
+                ans=min(ans,sum);
+            }
+        }
+        return ans+nums[0];
+    }
+};

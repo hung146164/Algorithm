@@ -1,0 +1,13 @@
+cho một mảng gồm các kí tự a,b 
+cần xóa bao nhiêu kí tự để không tồn tại i<j mà s[i]=b và s[j]=a
+
+cách 1:
+prefixsum:
+
+ta duyệt từ đầu đến cuối ứng với mỗi vị trí 
+nếu là 'a' ta sẽ xóa hết b bên trái, và a bên phải
+nếu là 'b' ta sẽ xóa hết b bên trái, và a bên phải
+
+độ phức tạp o(n), o(n)
+
+cách 2:

@@ -1,0 +1,98 @@
++Kỹ thuật hay học đc:
+Cookie lazy
+
++Sai lầm cần sửa:
+1. phải hoàn thành tất cả trường hợp kết thúc của đệ quy không được chủ quan
+ví dụ: if(startindex>=n) return false;
+2. nếu đề không cho điều kiện thì trước khi làm trường hợp đó, cần kiểm tra tất cả các trường hợp không thỏa mãn ngay từ đầu để trả về sai luôn.
+ví dụ : 
+for(int i=0; i< k ;i++)
+{
+    cin>>len[i];
+    if(len[i]>n) haveans=false;
+}
+
+3. không nên khắt khe quá mức với bộ nhớ nên khai báo n+5 để dư ra.
+
+Tóm tắt: 
+bài toán cho một chuỗi, và t truy vấn
+mỗi truy vẫn có k độ dài chuỗi,với mỗi truy vấn cần trả lời xem có thể cắt chuỗi s ban đầu sao cho tồn tại từng ấy chuỗi có độ như đã khai báo không nếu có in ra "YES" ngược lại in ra "NO"
+
+bài toán có 3 subtask
+subtask1: k=1;T<=200
+subtask2: k<=13, T<=3 và độ dài của S không vượt quá 200
+subtask3: k<=13; T<200
+
+Lời giải
+
+đối với subtask 1:
+- với mỗi trường hợp t ta kiểm tra xem S có tồn tại sâu đối xứng với độ dài bằng len[k] cho trước hay không. độ phức tạp (t*S)
+
+đối với subtask 2:
+
+- đối với mỗi T sử dụng duyệt tất cả các trạng thái có thể của chuỗi và kiểm tra xem có tồn tại trường hợp thỏa mãn không, độ phức tạp (T* 2^k *s)
+
+đối với subtask 3:
+
+1. đầu tiên tại mỗi vị trí ta cần biết vị trí kết thúc của xâu đối xứng có độ dài len, nếu không có thì là -1
+	
+-kt[i][j] là vị trí kết thúc của chuỗi bắt đầu từ i và có size là j.
+-để tính mảng này đầu tiên với mỗi vị trí ta lấy xâu đối xứng chẵn và lẻ dài nhất và lưu dp[l][f]=r;
+vector<vector<int>> dxbatdautaiicosizejketthuctai(n+1,vector<int>(n+1,-1));
+
+    for(int i=0; i<n; i++)
+    {
+        dxbatdautaiicosizejketthuctai[i][1]=i;
+        if(i+1<n && s[i]==s[i+1])
+        {
+            int l=i,r=i+1;
+            int f=2;
+            while(l>=0 && r<n && s[l]==s[r])
+            {
+                dxbatdautaiicosizejketthuctai[l][f]=r;
+                l--;
+                r++;
+                f+=2;
+            }
+        }
+        if(i+2<n && s[i]==s[i+2])
+        {
+            int l=i,r=i+2;
+            int f=3;
+            while(l>=0 && r<n && s[l]==s[r])
+            {
+                dxbatdautaiicosizejketthuctai[l][f]=r;
+                l--;
+                r++;
+                f+=2;
+            }
+        }
+    }
+
+-tiếp đó ta sẽ phân phát từ phải sang trái cho những đứa chưa biết bên trái
+
+for(int i=n-2;i>=0;i--)
+    {
+        for(int j=n;j>=1;j--)
+        {
+            if(dxbatdautaiicosizejketthuctai[i][j]==-1)
+            {
+                dxbatdautaiicosizejketthuctai[i][j]=dxbatdautaiicosizejketthuctai[i+1][j];
+            }
+        }
+    }
+
+
+
+sau đó ta sử dụng kĩ thuật dp bitmask để biểu diễn bật tắt của tất cả các trạng thái.
+
+lưu ý vì T=200, nên mỗi lần duyệt ta phải reset lại mảng dp, nhưng điều này sẽ làm cho thời gian tăng lên do đó ta sẽ sử dụng kỹ thuật Cookie (Lazy clear)
+tư tưởng: ta có một biến đếm state, với mỗi t ta sẽ tăng state lên 1,
+và một mảng visited[index][mask], mỗi trạng thái ta sẽ kiểm tra xem trạng thái đó đã được duyệt hay chưa bằng việt xem visted[i][j] có bằng state không? 
+ví dụ với trường hợp state =1 ta đã duyệt xong rồi, cho nên khi state = 2;
+thì ngay lúc duyệt visited[i][j] != state buộc ta phải cập nhập lại trạng thái dp, không return được về kể cả khi dp[i][j]!=-1.
+
+
+
+
+

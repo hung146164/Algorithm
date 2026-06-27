@@ -1,0 +1,34 @@
+1. Chuồng bồ câu
+Nếu n>=m: Theo nguyên lý Pigeonhole, trong một dãy $n$ số luôn tồn tại một dãy con liên tiếp có tổng chia hết cho m
+
+2. code sai 
+
+ for(int i=0; i< n; i++)
+    {
+        for(int j=0;j<m;j++)
+        {
+            if(dp[j])
+            {
+                dp[(nums[i]+j)%m]=true;
+		//sai vì hiện tại giả sử dp[x]=false, và lẽ ra nó sẽ không bị check là true, nhưng do thằng ở cùng vòng lặp đã đánh dấu nó là true trong bước hiện tại nên nó sẽ bị tính thêm theo 
+            }
+            dp[nums[i]%m]=true;
+        }
+    }
+
+
+đúng
+
+for(int i=0; i< n; i++)
+    {
+        vector<bool> clone=dp;
+        for(int j=0;j<m;j++)
+        {
+            if(dp[j])
+            {
+                clone[(nums[i]+j)%m]=true;
+            }
+        }
+        clone[nums[i]%m]=true;
+        dp=clone;
+    }

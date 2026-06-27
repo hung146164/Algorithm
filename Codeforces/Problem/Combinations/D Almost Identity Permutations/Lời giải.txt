@@ -1,0 +1,23 @@
+tóm tắt đề: đề cho một hoán vị n phần tử, và một số k
+hỏi có bao nhiêu cách xếp sao cho có ít nhất n-k người đúng đúng vị trí của mình. 
+ví dụ: 1 3 2 4 thì có 1 và 4 đứng đúng vị trí suy ra có 2 người đứng đúng vị trí
+
+lời giải:
+ta sẽ xếp theo các trường hợp sau:
+th1: cho n-k người đứng đúng vị trí, k người còn lại đứng sai 
+th2: cho n-k+1 ngưới đứng đúng vị trí, k-1 người còn lại đứng sai
+...
+thk: cho n người đứng đúng vị trí, 0 người còn lại đứng sai
+
+đối với mỗi trường hợp: 
+- để n-k+i người đứng đúng vị trí
+ta có: nC(n-k+i) 
+- để k-i người còn lại đứng sai vị trí ta có D(i)
+
+vậy tổng số hoán vị sẽ là
+ (i=0 -> i=k) Tổng ( (n)C(k-i) * D(i))
+
+tính D(i)
+th1: nếu k nhỏ <=20, sinh tổ để tính D(i)
+th2: nếu k lớn <=1e5
+D(n) = (n-1) * [D(n-2)+D(n-1)]

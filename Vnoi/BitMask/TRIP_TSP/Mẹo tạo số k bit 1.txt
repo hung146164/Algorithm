@@ -1,0 +1,1 @@
+long long res = (1LL << k) - 1;

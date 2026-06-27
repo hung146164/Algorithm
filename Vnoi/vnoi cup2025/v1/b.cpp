@@ -1,100 +1,130 @@
 #include<bits/stdc++.h>
 using namespace std;
+typedef long long ll;
+const ll mod=1e9+7;
+const ll N=1e5+1;
 
-vector<pair<int,int>> sangnt(int n)
+bool check[N];
+
+vector<ll> sang()
 {
-    vector<pair<int,int>> ans;
-    for(int i=2; i*i<=n; i++)
+    vector<ll> sont;
+    for(ll i=2; i<N; i++)
     {
-        if(n%i==0)
+        if(!check[i])
         {
-            int val=i;
-            int c=0;
-            while(n%i==0)
+            sont.push_back(i);
+            for(ll j=i*i;j<N ;j+=i)
             {
-                c++;
-                n/=i;
+                check[j]=true;
             }
-            ans.push_back({val,c});
         }
     }
-    if(n!=1)
-    {
-        ans.push_back({n,1});
-    }
-    return ans;
+    return sont;
 }
-vector<int> sol(int n,int m)
+ll powll(ll a,ll b)
 {
-    if(n==1 && m!=1)
+    ll ans=1;
+    while(b)
     {
-        return {-1};
-    }
-    if(n>m) return {-1};
-    if(n==m)
-    {
-        return {};
-    }
-    vector<pair<int,int>> nt1=sangnt(n),nt2=sangnt(m);
-//    cout<<"NT1"<<endl;
-//    for(int i=0;i<nt1.size(); i++){
-//        cout<<nt1[i].first<<' '<<nt1[i].second<<endl;
-//    }
-//    cout<<"NT2"<<endl;
-//    for(int i=0;i<nt2.size(); i++){
-//        cout<<nt2[i].first<<' '<<nt2[i].second<<endl;
-//    }
-    if(nt1.size()!=nt2.size()) return {-1};
-    for(int i=0; i< nt1.size(); i++)
-    {
-        if(nt1[i].first!=nt2[i].first) return {-1};
-        if(nt1[i].second>nt2[i].second) return {-1};
-    }
-    vector<int> ans;
-
-    while(true)
-    {
-        int have=false;
-        int so=1;
-        for(int i=0; i< nt1.size(); i++)
+        if(b&1)
         {
-              if(nt1[i].second==nt2[i].second) continue;
-              have=true;
-              if(nt1[i].second*2<=nt2[i].second)
-              {
-                  so*=pow(nt1[i].first,nt1[i].second);
-                  nt1[i].second*=2;
-              }
-              else{
-                so*=pow(nt1[i].first,nt2[i].second-nt1[i].second);
-                nt1[i].second=nt2[i].second;
-              }
+            ans=ans*a;
         }
-
-        if(!have) break;
-        ans.push_back(so);
+        b/=2;
+        a=a*a;
     }
     return ans;
-
 }
-int main()
+vector<pair<ll,ll>> get(ll n,vector<ll>& snt)
+{
+    vector<pair<ll,ll>> ans;
+    for(ll i=0; i<snt.size() && snt[i]<=n; i++)
+    {
+        ll cnt=0;
+        while(n%snt[i]==0)
+        {
+            n/=snt[i];
+            cnt++;
+        }
+        if(cnt!=0)
+        {
+            ans.push_back({snt[i],cnt});
+        }
+    }
+    if(n!=1) ans.push_back({n,1});
+    return ans;
+}
+int main(void)
 {
     ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    int t;cin>>t;
+    cin.tie(nullptr);
+    vector<ll> snt = sang();
+    ll t;
+    cin>>t;
     while(t--)
     {
-        int n,m; cin>>n>>m;
-        vector<int> ans=sol(n,m);
+        ll n,m;
+        cin>>n>>m;
+        if(n>m)
+        {
+            cout<<-1<<'\n';
+            continue;
+        }
+        else if(n==m)
+        {
+            cout<<0<<'\n';
+            continue;
+        }
+        vector<pair<ll,ll>> uoca=get(n,snt),uocb=get(m,snt);
 
-        if(ans.size()==1 && ans[0]==-1) cout<<-1<<'\n';
+        if(uoca.size()!=uocb.size())
+        {
+            cout<<-1<<'\n';
+            continue;
+        }
         else{
-                cout<<ans.size()<<' ';
-            for(int i=0; i< ans.size(); i++)
+            bool isequal=true;
+            for(ll i=0; i< uoca.size(); i++)
             {
-                cout<<ans[i]<<' ';
+                if(uoca[i].first!=uocb[i].first || uoca[i].second> uocb[i].second)
+                {
+                    isequal=false;
+                    break;
+                }
+            }
+            if(!isequal)
+            {
+                cout<<-1<<'\n';
+                continue;
+            }
+            ll ans=0;
+            vector<ll> h(201,1);
+            for(ll i=0; i< uoca.size(); i++)
+            {
+                ll val=uoca[i].second;
+                ll cnt=0;
+                while(val!=uocb[i].second)
+                {
+                    ll time=min(uocb[i].second-val,val);
+                    val+=time;
+                    h[cnt]*=powll(uoca[i].first,time);
+                    cnt++;
+                }
+                ans=max(ans,cnt);
+            }
+            cout<<ans<<' ';
+            ll i=0;
+            while(i<201 && h[i]!=1)
+            {
+                cout<<h[i]<<' ';
+                i++;
             }
             cout<<'\n';
         }
     }
+
+
 }
+
+
