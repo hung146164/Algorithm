@@ -399,14 +399,14 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
-/voi
-/trick
+/Voi
+/Trick
 /LQDOJ
 /LinhTinh
 /Leetcode
 /HBss
 /Falconcodeup
-/Data Structure
+/DataStructure
 /CSES
 /A2Oj
 
